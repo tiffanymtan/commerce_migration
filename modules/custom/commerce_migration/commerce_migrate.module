@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Module file for commerce_migrate.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_migration_form_commerce_product_variation_broadband_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  commerce_migrate_disable_form_elements($form);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_migration_form_commerce_product_variation_mobile_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  commerce_migrate_disable_form_elements($form);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function commerce_migration_form_commerce_product_variation_mobile_broadband_edit_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  commerce_migrate_disable_form_elements($form);
+}
+
+/**
+ * Helper function to disable form fields for Commerce elements.
+ */
+function commerce_migration_disable_form_elements(&$form) {
+  $form['name']['#disabled'] = TRUE;
+  $form['sku']['#disabled'] = TRUE;
+  $form['list_price']['#disabled'] = TRUE;
+  $form['price']['#disabled'] = TRUE;
+  $form['attribute_access_technology']['#disabled'] = TRUE;
+  $form['attribute_modem']['#disabled'] = TRUE;
+  $form['attribute_phone_package']['#disabled'] = TRUE;
+  $form['attribute_speed']['#disabled'] = TRUE;
+  $form['attribute_valet_install']['#disabled'] = TRUE;
+  $form['attribute_voice_package']['#disabled'] = TRUE;
+  $form['field_bundle_discount']['#disabled'] = TRUE;
+  $form['field_contract_months']['#disabled'] = TRUE;
+}
+
+/**
+ * Implemnents hook__inline_entity_form_entity_form_alter().
+ */
+function commerce_migration_inline_entity_form_entity_form_alter(&$entity_form, &$form_state) {
+  if ($entity_form['#entity_type'] == 'commerce_product_attribute_value') {
+    $entity_form['field_price']['#disabled'] = TRUE;
+    $entity_form['field_postage_handling']['#disabled'] = TRUE;
+    $entity_form['field_setup_price']['#disabled'] = TRUE;
+    $entity_form['name']['#disabled'] = TRUE;
+  }
+}

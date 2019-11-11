@@ -1,0 +1,118 @@
+# Migration configuration for bundles product.
+id: commerce_bundles
+label: 'bundles'
+migration_group: commerce_bundles
+
+source:
+  plugin: url
+  data_fetcher_plugin: http
+  data_parser_plugin: json
+  headers:
+    Accept: 'application/json; charset=utf-8'
+    Content-Type: 'application/json'
+  urls: https://www.glo5.com/bundles.json
+  identifier: id
+  identifierDepth: 1
+  ids:
+    id:
+      type: string
+  constants:
+    id: bundles
+  fields:
+    -
+      name: id
+      label: 'id'
+      selector: id
+    -
+      name: description
+      label: 'description'
+      selector: description
+    -
+      name: monthlyPrice
+      label: 'monthlyPrice'
+      selector: monthlyPrice
+    -
+      name: technology
+      label: 'technology'
+      selector: technology
+    -
+      name: speed
+      label: 'speed'
+      selector: speed
+    -
+      name: modem
+      label: 'modem'
+      selector: modem
+    -
+      name: modemMonthlyPrice
+      label: 'modemMonthlyPrice'
+      selector: modemMonthlyPrice
+    -
+      name: modemShippingPrice
+      label: 'modemShippingPrice'
+      selector: modemShippingPrice
+    -
+      name: totalMonthlyPrice
+      label: 'totalMonthlyPrice'
+      selector: totalMonthlyPrice
+
+destination:
+  plugin: entity:commerce_product_variation
+
+process:
+  type:
+    plugin: default_value
+    default_value: bundles
+
+  price:
+    - plugin: commerce_price
+      source: totalMonthlyPrice
+
+  title:
+    -
+      plugin: skip_on_empty
+      method: row
+      source: description
+
+  product_id:
+    plugin: commerce_product_id
+    source: constants/id
+
+  sku:
+    -
+      plugin: skip_on_empty
+      method: row
+      source: id
+
+  attribute_access_technology:
+    -
+      plugin: entity_generate
+      source: technology
+      default_values:
+        description: No Technology
+    -
+      plugin: entity_lookup
+      source: technology
+
+  attribute_modem:
+    -
+      plugin: entity_generate
+      source: modem
+      default_values:
+        description: No Modem
+    -
+      plugin: entity_lookup
+      source: modem
+  field_price:
+    -
+      plugin: commerce_price
+      source: modemMonthlyPrice
+
+  attribute_speed:
+    -
+      plugin: entity_generate
+      source: speed
+      default_value: null
+    -
+      plugin: entity_lookup
+      source: speed

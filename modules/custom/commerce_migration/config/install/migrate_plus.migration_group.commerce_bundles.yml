@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: commerce_bundles
+label: 'bundles'
+description: 'bundles migration'
+source_type: JSON
+module: null
+shared_configuration: null

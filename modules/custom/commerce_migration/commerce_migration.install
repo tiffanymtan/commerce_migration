@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Uninstall of commerce migration to ensure deletion of migration files.
+ */
+
+use Drupal\Core\Database\Query\Condition;
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Removes stale migration configs during uninstall.
+ */
+function commerce_migration_uninstall() {
+  // Find files that have the name "migrate_plus.migration.commerce_bundles"
+  // or "migrate_plus.migration_group.commerce_bundles" in the database.
+  $or = new Condition("OR");
+  $or
+    ->condition("name", db_like("migrate_plus.migration.commerce_bundles") . "%", "LIKE")
+    ->condition("name", db_like("migrate_plus.migration_group.commerce_bundles") . "%", "LIKE");
+
+  $query = \Drupal::database()->select("config", "c")->fields("c", ["name"])
+    ->condition($or)->execute();
+
+  $config_names = $query->fetchAll();
+
+  // Delete each config using configFactory.
+  foreach ($config_names as $config_name) {
+    \Drupal::configFactory()->getEditable($config_name->name)->delete();
+  }
+}
